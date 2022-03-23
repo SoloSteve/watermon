@@ -1,5 +1,6 @@
 <template>
   <div class="all">
+    <div class="timestamp">{{lastUpdate}}</div>
     <div class="gauges">
       <WaterTemperatureGauge :temperature="waterTemperature"></WaterTemperatureGauge>
       <TemperatureChangeGauge :rate="rate"/>
@@ -30,6 +31,7 @@ export default defineComponent({
       waterTemperature: 0,
       ambientTemperature: 0,
       rate: 0,
+      lastUpdate: "Waiting for update...",
       history: [],
     }
   },
@@ -54,6 +56,8 @@ export default defineComponent({
       this.ambientTemperature = history[history.length - 1].ambientTemperature;
       this.history = history;
       this.rate = growth;
+      const now = new Date();
+      this.lastUpdate = `${now.toLocaleDateString('en-IL')} ${now.toLocaleTimeString('en-IL')}`;
     });
     socket.on("connect", () => {
       socket.emit("get-data");
@@ -83,5 +87,9 @@ export default defineComponent({
   width: 100%;
   height: 50%;
   bottom: 0;
+}
+.timestamp {
+  position: absolute;;
+  top: 100px;
 }
 </style>
